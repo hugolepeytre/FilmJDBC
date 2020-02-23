@@ -8,7 +8,7 @@ public class Controller extends DBConnect {
 
     public void find_all_roles(int actorId) {
         try {
-            PreparedStatement s = connect.prepareStatement("SELECT ActorRole FROM Person NATURAL JOIN WorksOn NATURAL JOIN WorkDone NATURAL JOIN ARole WHERE WorkType = \"Actor\" AND PersonId = ?;");
+            PreparedStatement s = connect.prepareStatement("SELECT ActorRole FROM Person NATURAL JOIN WorksOn NATURAL JOIN WorkDone NATURAL JOIN ARole WHERE WorkType = \"Actor\" AND PId = ?;");
             s.setInt(1, actorId);
             ResultSet res = s.executeQuery();
             while(res.next()) {
@@ -20,7 +20,7 @@ public class Controller extends DBConnect {
         }
     }
 
-    public void find_all_movies(String actorName) {
+    public void find_all_movies(int actorId) {
         
     }
 
