@@ -1,11 +1,23 @@
+import java.sql.*;
+
 public class Controller extends DBConnect {
     public Controller() {
         super();
 
     }
 
-    public void find_all_roles(String actorName) {
-        
+    public void find_all_roles(int actorId) {
+        try {
+            PreparedStatement s = connect.prepareStatement("SELECT ActorRole FROM Person NATURAL JOIN WorksOn NATURAL JOIN WorkDone NATURAL JOIN ARole WHERE WorkType = \"Actor\" AND PersonId = ?;");
+            s.setInt(1, actorId);
+            ResultSet res = s.executeQuery();
+            while(res.next()) {
+                System.out.println(String.format("Role : ", res.getString("ActorRole")));
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error, couldn't find the roles" + e.getMessage());
+        }
     }
 
     public void find_all_movies(String actorName) {
