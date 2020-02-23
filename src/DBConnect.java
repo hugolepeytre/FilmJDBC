@@ -10,7 +10,7 @@ public abstract class DBConnect {
             Properties p = new Properties();
             p.put("user", "root");
             p.put("password", "69fbb653e11ee50ae27c60646cc94339");
-            connect = DriverManager.getConnection("jdbc:mysql://127.0.0.1/ekt?autoReconnect=true&useSSL=false", p);
+            connect = DriverManager.getConnection("jdbc:mysql://127.0.0.1/movies?autoReconnect=true&useSSL=false", p);
         } catch (Exception e) {
             throw new RuntimeException("Unable to connect", e);
     	}
