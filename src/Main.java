@@ -18,15 +18,15 @@ public class Main {
             switch(action) {
             case "1": 
                 System.out.println("Find the name of all roles a given actor performs");
-                System.out.println("Enter the name of the actor :");
+                System.out.println("Enter the ID of the actor :");
                 String actorName = scanner.nextLine();
-                c.find_all_roles(actorName);
+                c.find_all_roles(Integer.parseInt(actorName)); //TODO handle not valid integer case
                 break;
             case "2": 
                 System.out.println("Find the name of all movies a given actor appears in");
-                System.out.println("Enter the name of the actor :");
+                System.out.println("Enter the ID of the actor :");
                 String actor = scanner.nextLine();
-                c.find_all_movies(actor);
+                c.find_all_movies(Integer.parseInt(actor));
                 break;
             case "3": 
                 System.out.println("Find which company produces most movies within each genre (comedy, family, scifi, etc)");
