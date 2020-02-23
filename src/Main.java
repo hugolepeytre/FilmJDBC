@@ -16,15 +16,28 @@ public class Main {
             
             String action = scanner.nextLine();
             switch(action) {
-            case "1": //TODO
+            case "1": 
+                System.out.println("Find the name of all roles a given actor performs");
+                System.out.println("Enter the name of the actor :");
+                String actorName = scanner.nextLine();
+                c.find_all_roles(actorName);
                 break;
-            case "2": //TODO
+            case "2": 
+                System.out.println("Find the name of all movies a given actor appears in");
+                System.out.println("Enter the name of the actor :");
+                String actor = scanner.nextLine();
+                c.find_all_movies(actor);
                 break;
-            case "3": //TODO
+            case "3": 
+                System.out.println("Find which company produces most movies within each genre (comedy, family, scifi, etc)");
+                c.most_movies_per_genre();
                 break;
-            case "4": //TODO
+            case "4": 
+                System.out.println("Insert a new movie with director, writers, actors and whatever belongs here.");
+                c.insert_new_movies();
                 break;
             case "5": //TODO
+                System.out.println("Insert a review of an episode of a series");
                 System.out.println("Enter the user ID :");
                 String id = scanner.nextLine();
                 System.out.println("Enter the review text :");
