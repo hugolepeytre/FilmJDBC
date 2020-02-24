@@ -118,7 +118,7 @@ public class Main {
         }
         System.out.println("How long is the movie ? (Format HH:MM:SS) : ");
         String l = s.nextLine();
-        if(!checkLength(pubDate)) {
+        if(!checkLength(l)) {
             throw new ParseException("Wrong format for the length of the movie",0);
         }
         return new Movie(cId, pubYear, tit, plat, story, pubAsV, pubDate, l);
