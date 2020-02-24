@@ -2,11 +2,11 @@
 // Date : 23 Feb 2020
 //
 import java.util.Scanner;
+import java.util.ArrayList;;
 
 public class Main {
-    
     public static void main(String[] args) {
-        System.out.println("coucou");
+        System.out.println("Heyy ;)");
         Controller c = new Controller();
         Scanner scanner = new Scanner(System.in);
         boolean continueUseCase = true;
@@ -15,34 +15,51 @@ public class Main {
             System.out.println("'Q' to quit");
             
             String action = scanner.nextLine();
+            // TODO : Check validity of all arguments
             switch(action) {
             case "1": 
-                System.out.println("Find the name of all roles a given actor performs");
                 System.out.println("Enter the ID of the actor :");
-                String actorName = scanner.nextLine();
-                c.find_all_roles(Integer.parseInt(actorName)); //TODO handle not valid integer case
+                String actorId = scanner.nextLine();
+                c.find_all_roles(Integer.parseInt(actorId));
                 break;
             case "2": 
-                System.out.println("Find the name of all movies a given actor appears in");
                 System.out.println("Enter the ID of the actor :");
-                String actor = scanner.nextLine();
-                c.find_all_movies(Integer.parseInt(actor));
+                actorId = scanner.nextLine();
+                c.find_all_movies(Integer.parseInt(actorId));
                 break;
             case "3": 
-                System.out.println("Find which company produces most movies within each genre (comedy, family, scifi, etc)");
                 c.most_movies_per_genre();
                 break;
             case "4": 
-                System.out.println("Insert a new movie with director, writers, actors and whatever belongs here.");
-                c.insert_new_movies();
+                Movie newM = parseMovie();
+                System.out.println("Enter the list of music IDs from the movie, in the following format : ID1,ID2,ID3,...,LastID");
+                ArrayList<Integer> musics = parseListIds();
+                System.out.println("Enter the list of genre IDs the movie fits in, in the following format : ID1,ID2,ID3,...,LastID");
+                ArrayList<Integer> genres = parseListIds();
+                System.out.println("Enter the list of actor IDs from the movie, in the following format : ID1,ID2,ID3,...,LastID");
+                ArrayList<Integer> actors = parseListIds();
+                System.out.println("Enter the actor's roles, one by one, ending each with ENTER");
+                int numRoles = actors.size();
+                ArrayList<String> roles = parseRoles(numRoles);
+                System.out.println("Enter the list of writer IDs from the movie, in the following format : ID1,ID2,ID3,...,LastID");
+                ArrayList<Integer> writers = parseListIds();
+                System.out.println("The ID of the director : ");
+                int dirId = Integer.parseInt(scanner.nextLine());
+                c.insert_new_movies(newM, musics, genres, actors, roles, writers, dirId);
                 break;
-            case "5": //TODO
+            case "5": 
                 System.out.println("Insert a review of an episode of a series");
-                System.out.println("Enter the user ID :");
-                String id = scanner.nextLine();
+                System.out.println("Enter the user's id :");
+                int uid = Integer.parseInt(scanner.nextLine());
                 System.out.println("Enter the review text :");
                 String text = scanner.nextLine();
-                c.insert_review(Integer.parseInt(id), text);
+                System.out.println("How would you rate the movie ? (1 to 5)");
+                int rating = Integer.parseInt(scanner.nextLine());
+                System.out.println("Enter the movie's id : ");
+                int movieId = Integer.parseInt(scanner.nextLine());
+                System.out.println("Enter the episode's id : ");
+                int epId = Integer.parseInt(scanner.nextLine());
+                c.insert_review(uid, text, epId, movieId, rating);
                 break;
             case "Q": 
                 continueUseCase = false;
@@ -54,6 +71,18 @@ public class Main {
         }
         scanner.close();
         System.out.println("Exit program");
+    }
+
+    private static Movie parseMovie() {
+
+    }
+
+    private static ArrayList<Integer> parseListIds() {
+        String idList = scanner.nextLine();
+    }
+
+    private static ArrayList<String> parseRoles(int numRoles) {
+
     }
 }
 
