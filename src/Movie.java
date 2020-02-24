@@ -10,5 +10,6 @@ public class Movie {
         publishedAsVideo = pubAsV;
         publicationDate = pubDate;
         mLength = l;
+        storyline = story;
     }
 }

@@ -7,12 +7,16 @@ public abstract class DBConnect {
     	try {
             Class.forName("com.mysql.cj.jdbc.Driver");	    
             // Properties for user and password.
-            Properties p = new Properties();
+            final Properties p = new Properties();
             p.put("user", "root");
             p.put("password", "69fbb653e11ee50ae27c60646cc94339");
             connect = DriverManager.getConnection("jdbc:mysql://127.0.0.1/moviedb?autoReconnect=true&useSSL=false", p);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Unable to connect", e);
-    	}
+        }
+    }
+
+    public void closeConn() {
+        try {connect.close();} catch (final Exception e) {};
     }
 }

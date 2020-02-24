@@ -20,12 +20,12 @@ public class Main {
             try {
                 switch(action) {
                 case "1": 
-                    System.out.println("Enter the ID of the actor :");
+                    System.out.println("Enter the ID of the person :");
                     String actorId = scanner.nextLine();
                     c.find_all_roles(Integer.parseInt(actorId));
                     break;
                 case "2": 
-                    System.out.println("Enter the ID of the actor :");
+                    System.out.println("Enter the ID of the person :");
                     actorId = scanner.nextLine();
                     c.find_all_movies(Integer.parseInt(actorId));
                     break;
@@ -76,6 +76,7 @@ public class Main {
             }
         }
         scanner.close();
+        c.closeConn();
         System.out.println("Exit program");
     }
 

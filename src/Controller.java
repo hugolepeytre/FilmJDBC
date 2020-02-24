@@ -6,9 +6,9 @@ public class Controller extends DBConnect {
     public Controller() {
         super();
         try {
-            PreparedStatement getNumMovies = connect.prepareStatement("SELECT COUNT(*) FROM Movie");
-            PreparedStatement getNumCR = connect.prepareStatement("SELECT COUNT(*) FROM CommentOrReview");
-            PreparedStatement getNumWDone = connect.prepareStatement("SELECT COUNT(*) FROM WDone");
+            PreparedStatement getNumMovies = connect.prepareStatement("SELECT COUNT(*) FROM Movie;");
+            PreparedStatement getNumCR = connect.prepareStatement("SELECT COUNT(*) FROM CommentOrReview;");
+            PreparedStatement getNumWDone = connect.prepareStatement("SELECT COUNT(*) FROM WorkDone;");
             ResultSet r = getNumMovies.executeQuery();
             if (r.next()) {
                 nextMovieId = r.getInt(1) + 1;
@@ -44,8 +44,13 @@ public class Controller extends DBConnect {
             PreparedStatement s = connect.prepareStatement("SELECT ActorRole FROM Person NATURAL JOIN WorkDone NATURAL JOIN ARole WHERE WorkType = \"Actor\" AND PId = (?);");
             s.setInt(1, actorId);
             ResultSet res = s.executeQuery();
-            while(res.next()) {
-                System.out.println(String.format("Role : %s\n", res.getString("ActorRole")));
+            if (!res.next()) {
+                System.out.println("This person has never acted in any movies");
+            }
+            else {
+                do {
+                    System.out.println(String.format("Role : %s\n", res.getString("ActorRole")));
+                } while(res.next());
             }
         }
         catch (SQLException e) {
@@ -58,8 +63,13 @@ public class Controller extends DBConnect {
             PreparedStatement s = connect.prepareStatement("SELECT Title FROM Person NATURAL JOIN WorkDone NATURAL JOIN WorkedOnMovie NATURAL JOIN Movie WHERE WorkType = \"Actor\" AND PId = (?);");
             s.setInt(1, actorId);
             ResultSet res = s.executeQuery();
-            while(res.next()) {
-                System.out.println(String.format("Movie : %s\n", res.getString("Title")));
+            if (!res.next()) {
+                System.out.println("This person has never acted in any movies");
+            }
+            else {
+                while(res.next()) {
+                    System.out.println(String.format("Movie : %s\n", res.getString("Title")));
+                }
             }
         }
         catch (SQLException e) {
@@ -69,14 +79,14 @@ public class Controller extends DBConnect {
 
     public void most_movies_per_genre() {
         try {
-            PreparedStatement s = connect.prepareStatement("SELECT CName, CategoryName, MAX(TotalPubMovies) as Tot"
-                                                         + "FROM (SELECT CName, CategoryName, COUNT(*) as TotalPubMovies"
-                                                         + "FROM PublishingCompany NATURAL JOIN Movie NATURAL JOIN HasGenre NATURAL JOIN Category"
-                                                         + "GROUP BY CId, CategoryId)"
+            PreparedStatement s = connect.prepareStatement("SELECT CName, CategoryName, MAX(TotalPubMovies) as Tot "
+                                                         + "FROM (SELECT CName, CategoryName, COUNT(*) as TotalPubMovies "
+                                                         + "FROM PublishingCompany NATURAL JOIN Movie NATURAL JOIN HasGenre NATURAL JOIN Category "
+                                                         + "GROUP BY CId, CategoryId) AS tmp_name "
                                                          + "GROUP BY CategoryName;");
             ResultSet r = s.executeQuery();
             while(r.next()) {
-                System.out.println(String.format("%s published %d %s movies\n", r.getString("CName"), r.getInt("Tot"), r.getString("CategoryName")));
+                System.out.println(String.format("%spublished %d %s movies\n", r.getString("CName"), r.getInt("Tot"), r.getString("CategoryName")));
             }
         }
         catch (SQLException e) {
@@ -101,22 +111,22 @@ public class Controller extends DBConnect {
             addMov.setInt(9, m.cId);
             addMov.executeUpdate();
 
-            PreparedStatement addMusic = connect.prepareStatement("INSERT INTO IsIn VALUES ((?), (?))");
+            PreparedStatement addMusic = connect.prepareStatement("INSERT INTO IsIn VALUES ((?), (?));");
             for (int i : musics) {
                 addMusic.setInt(1, i);
                 addMusic.setInt(2, nextMovieId);
                 addMusic.executeUpdate();
             }
 
-            PreparedStatement addGenres = connect.prepareStatement("INSERT INTO HasGenre VALUES ((?), (?))");
+            PreparedStatement addGenres = connect.prepareStatement("INSERT INTO HasGenre VALUES ((?), (?));");
             for (int i : genres) {
                 addGenres.setInt(1, nextMovieId);
                 addGenres.setInt(2, i);
                 addGenres.executeUpdate();
             }
 
-            PreparedStatement addWriters1 = connect.prepareStatement("INSERT INTO WorkDone VALUES ((?), (?), (?))");
-            PreparedStatement addWriters2 = connect.prepareStatement("INSERT INTO WorkedOnMovie VALUES ((?), (?))");
+            PreparedStatement addWriters1 = connect.prepareStatement("INSERT INTO WorkDone VALUES ((?), (?), (?));");
+            PreparedStatement addWriters2 = connect.prepareStatement("INSERT INTO WorkedOnMovie VALUES ((?), (?));");
             for (int i : writers) {
                 addWriters1.setInt(1, nextWDId);
                 addWriters1.setString(2, "Writer");
@@ -128,9 +138,9 @@ public class Controller extends DBConnect {
                 nextWDId += 1;
             }
 
-            PreparedStatement addActors1 = connect.prepareStatement("INSERT INTO WorkDone VALUES ((?), (?), (?))");
-            PreparedStatement addActors2 = connect.prepareStatement("INSERT INTO WorkedOnMovie VALUES ((?), (?))");
-            PreparedStatement addActors3 = connect.prepareStatement("INSERT INTO ARole VALUES ((?), (?))");
+            PreparedStatement addActors1 = connect.prepareStatement("INSERT INTO WorkDone VALUES ((?), (?), (?));");
+            PreparedStatement addActors2 = connect.prepareStatement("INSERT INTO WorkedOnMovie VALUES ((?), (?));");
+            PreparedStatement addActors3 = connect.prepareStatement("INSERT INTO ARole VALUES ((?), (?));");
             for (int j = 0; j < actors.size(); j++) {
                 addActors1.setInt(1, nextWDId);
                 addActors1.setString(2, "Actor");
@@ -145,8 +155,8 @@ public class Controller extends DBConnect {
                 nextWDId += 1;
             }
 
-            PreparedStatement addDirector1 = connect.prepareStatement("INSERT INTO WorkDone VALUES ((?), (?), (?))");
-            PreparedStatement addDirector2 = connect.prepareStatement("INSERT INTO WorkedOnMovie VALUES ((?), (?))");
+            PreparedStatement addDirector1 = connect.prepareStatement("INSERT INTO WorkDone VALUES ((?), (?), (?));");
+            PreparedStatement addDirector2 = connect.prepareStatement("INSERT INTO WorkedOnMovie VALUES ((?), (?));");
             addDirector1.setInt(1, nextWDId);
             addDirector1.setString(2, "Director");
             addDirector1.setInt(3, director);
@@ -167,7 +177,7 @@ public class Controller extends DBConnect {
 
     public void insert_review(int userId, String text, int episodeId, int movieId, int grade) {
         try {
-            PreparedStatement createReview = connect.prepareStatement("INSERT INTO ReviewOrComment VALUES ((?), (?), (?));");
+            PreparedStatement createReview = connect.prepareStatement("INSERT INTO CommentOrReview VALUES ((?), (?), (?));");
             PreparedStatement createRating = connect.prepareStatement("INSERT INTO ReviewRatings VALUES ((?), (?));");
             PreparedStatement createRelationship = connect.prepareStatement("INSERT INTO ReviewedMovie VALUES ((?), (?));");
 
