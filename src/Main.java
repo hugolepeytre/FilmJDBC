@@ -16,7 +16,6 @@ public class Main {
             System.out.println("'Q' to quit");
             
             String action = scanner.nextLine();
-            // TODO : Check validity of all arguments
             try {
                 switch(action) {
                 case "1": 
@@ -57,6 +56,9 @@ public class Main {
                     String text = scanner.nextLine();
                     System.out.println("How would you rate the movie ? (1 to 5)");
                     int rating = Integer.parseInt(scanner.nextLine());
+                    if (5 < rating || rating < 1) {
+                        throw new ParseException("The rate should be between 1 and 5",0);
+                    }
                     System.out.println("Enter the movie's id : ");
                     int movieId = Integer.parseInt(scanner.nextLine());
                     System.out.println("Enter the episode's id : ");
@@ -86,6 +88,12 @@ public class Main {
         int cId = Integer.parseInt(s.nextLine());
         System.out.println("Enter the publication year : ");
         int pubYear = Integer.parseInt(s.nextLine());
+        if (pubYear > 2020) {
+            throw new ParseException("We can't see the future, wrong publication date !",0);
+        }
+        if (pubYear < 1895) {
+            throw new ParseException("Cinema wasn't even a thing, choose another date please",0);
+        }
         System.out.println("Enter the platform where the movie was published : ");
         String plat = s.nextLine();
         System.out.println("Enter the storyline : ");
@@ -104,8 +112,14 @@ public class Main {
         }
         System.out.println("Enter the publication date (Format : YYYY-MM-DD) : ");
         String pubDate = s.nextLine();
+        if(!checkPubDate(pubDate)) {
+            throw new ParseException("Wrong format for the publication date",0);
+        }
         System.out.println("How long is the movie ? (Format HH:MM:SS) : ");
         String l = s.nextLine();
+        if(!checkLength(pubDate)) {
+            throw new ParseException("Wrong format for the length of the movie",0);
+        }
         return new Movie(cId, pubYear, tit, plat, story, pubAsV, pubDate, l);
     }
 
@@ -125,6 +139,32 @@ public class Main {
             r.add(s.nextLine());
         }
         return r;
+    }
+    
+    private static boolean checkInBetween(int val, int lower, int upper) {
+        return lower <= val && val < upper;
+    }
+    
+    private static boolean checkPubDate(String date) {
+        if (date.charAt(4) != '-' || date.charAt(7) != '-') {
+            return false;
+        } else if (!checkInBetween(Integer.parseInt(date.substring(0,4)), 1895, 2021)
+                || !checkInBetween(Integer.parseInt(date.substring(5,6)), 1, 13)
+                || !checkInBetween(Integer.parseInt(date.substring(8)), 1, 32)) {
+            return false;
+        }
+        return true;
+    }
+    
+    private static boolean checkLength(String l) {
+        if (l.charAt(2) != ':' || l.charAt(5) != ':') {
+            return false;
+        } else if (!checkInBetween(Integer.parseInt(l.substring(0,2)), 0, 100)
+                || !checkInBetween(Integer.parseInt(l.substring(3,5)), 0, 100)
+                || !checkInBetween(Integer.parseInt(l.substring(6)), 0, 100)) {
+            return false;
+        }
+        return true;
     }
 }
 
