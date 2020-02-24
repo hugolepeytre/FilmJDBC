@@ -73,7 +73,7 @@ public class Main {
                 }
                 System.out.println("");
             }
-            catch (ParseException e) {
+            catch (ParseException|NumberFormatException e) {
                 System.out.println("Wrong argument format, please try again\nError : " + e.getMessage());
             }
         }

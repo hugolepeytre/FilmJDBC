@@ -6,9 +6,9 @@ public class Controller extends DBConnect {
     public Controller() {
         super();
         try {
-            PreparedStatement getNumMovies = connect.prepareStatement("SELECT COUNT(*) FROM Movie;");
-            PreparedStatement getNumCR = connect.prepareStatement("SELECT COUNT(*) FROM CommentOrReview;");
-            PreparedStatement getNumWDone = connect.prepareStatement("SELECT COUNT(*) FROM WorkDone;");
+            PreparedStatement getNumMovies = connect.prepareStatement("SELECT MAX(MovieId) FROM Movie;");
+            PreparedStatement getNumCR = connect.prepareStatement("SELECT MAX(CRId) FROM CommentOrReview;");
+            PreparedStatement getNumWDone = connect.prepareStatement("SELECT MAX(WorkId) FROM WorkDone;");
             ResultSet r = getNumMovies.executeQuery();
             if (r.next()) {
                 nextMovieId = r.getInt(1) + 1;
@@ -33,6 +33,7 @@ public class Controller extends DBConnect {
                 System.out.println("No work done found in Database");
                 nextWDId = 1;
             }
+            System.out.println(String.format("Number of movies : %d, number of coms : %d, number of woks : %d", nextMovieId, nextCRId, nextWDId));
         }
         catch (SQLException e) {
             System.out.println("Error, couldn't get the number of movies and ids : " + e.getMessage());
@@ -86,7 +87,7 @@ public class Controller extends DBConnect {
                                                          + "GROUP BY CategoryName;");
             ResultSet r = s.executeQuery();
             while(r.next()) {
-                System.out.println(String.format("%spublished %d %s movies\n", r.getString("CName"), r.getInt("Tot"), r.getString("CategoryName")));
+                System.out.println(String.format("%s published %d %s movies\n", r.getString("CName"), r.getInt("Tot"), r.getString("CategoryName")));
             }
         }
         catch (SQLException e) {
@@ -96,6 +97,13 @@ public class Controller extends DBConnect {
     }
 
     public void insert_new_movies(Movie m, ArrayList<Integer> musics, ArrayList<Integer> genres, ArrayList<Integer> actors, ArrayList<String> roles, ArrayList<Integer> writers, int director) {
+        Savepoint s1 = null;
+        try {
+            s1 = connect.setSavepoint();
+        }
+        catch (SQLException e2) {
+            System.out.println("Critical error : couldn't rollback after failed statements");
+        }
         int previousMovieId = nextMovieId;
         int previousWDId = nextWDId;
         try {
@@ -167,8 +175,15 @@ public class Controller extends DBConnect {
             nextWDId += 1;
 
             nextMovieId += 1;
+            connect.commit();
         }
         catch (SQLException e) {
+            try {
+                connect.rollback(s1);
+            }
+            catch (SQLException e2) {
+                System.out.println("Critical error : couldn't rollback after failed statements");
+            }
             nextMovieId = previousMovieId;
             nextWDId = previousWDId;
             System.out.println("Couldn't insert movie : " + e.getMessage());
@@ -176,10 +191,18 @@ public class Controller extends DBConnect {
     }
 
     public void insert_review(int userId, String text, int episodeId, int movieId, int grade) {
+        Savepoint s1 = null;
+        try {
+            s1 = connect.setSavepoint();
+        }
+        catch (SQLException e2) {
+            System.out.println("Critical error : couldn't rollback after failed statements");
+        }
+        int oldCRId = nextCRId;
         try {
             PreparedStatement createReview = connect.prepareStatement("INSERT INTO CommentOrReview VALUES ((?), (?), (?));");
             PreparedStatement createRating = connect.prepareStatement("INSERT INTO ReviewRatings VALUES ((?), (?));");
-            PreparedStatement createRelationship = connect.prepareStatement("INSERT INTO ReviewedMovie VALUES ((?), (?));");
+            PreparedStatement createRelationship = connect.prepareStatement("INSERT INTO ReviewedEpisode VALUES ((?), (?), (?));");
 
             createReview.setInt(1, nextCRId);
             createReview.setString(2, text);
@@ -188,16 +211,26 @@ public class Controller extends DBConnect {
             createRating.setInt(1, nextCRId);
             createRating.setInt(2, grade);
 
-            createRelationship.setInt(1, movieId);
-            createRelationship.setInt(2, nextCRId);
+            createRelationship.setInt(1, nextCRId);
+            createRelationship.setInt(2, episodeId);
+            createRelationship.setInt(3, movieId);
 
             createReview.executeUpdate();
             createRating.executeUpdate();
             createRelationship.executeUpdate();
+            nextCRId += 1;
+            
+            connect.commit();
         }
         catch (SQLException e) {
+            try {
+                connect.rollback(s1);
+            }
+            catch (SQLException e2) {
+                System.out.println("Critical error : couldn't rollback after failed statements");
+            }
+            nextCRId = oldCRId;
             System.out.println("Error while inserting review : " + e.getMessage());
         }
-        nextCRId += 1;
     }
 }
