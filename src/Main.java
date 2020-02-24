@@ -101,10 +101,10 @@ public class Main {
         System.out.println("Was the movie published as video ? (Y/N) : ");
         String b = s.nextLine();
         boolean pubAsV;
-        if (b == "Y") {
+        if (b.equals("Y")) {
             pubAsV = true;
         }
-        else if (b == "N") {
+        else if (b.equals("N")) {
             pubAsV = false;
         }
         else {
