@@ -93,8 +93,8 @@ public class Controller extends DBConnect {
             addMov.setInt(1, nextMovieId);
             addMov.setString(2, m.title);
             addMov.setString(3, m.platform);
-            addMov.setTime(4, m.mLength);
-            addMov.setDate(5, m.publicationDate);
+            addMov.setString(4, m.mLength);
+            addMov.setString(5, m.publicationDate);
             addMov.setInt(6, m.publicationYear);
             addMov.setString(7, m.storyline);
             addMov.setBoolean(8, m.publishedAsVideo);

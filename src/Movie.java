@@ -1,13 +1,8 @@
-import java.sql.Date;
-import java.sql.Time;
-
 public class Movie {
     int cId, publicationYear;
-    String title, platform, storyline;
+    String title, platform, storyline, publicationDate, mLength;
     boolean publishedAsVideo;
-    Time mLength; 
-    Date publicationDate;
-    Movie(int cId, int pubYear, String tit, String plat, String story, boolean pubAsV, Date pubDate, Time l) {
+    Movie(int cId, int pubYear, String tit, String plat, String story, boolean pubAsV, String pubDate, String l) {
         this.cId = cId;
         publicationYear = pubYear;
         title = tit;
