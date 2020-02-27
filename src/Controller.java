@@ -68,9 +68,9 @@ public class Controller extends DBConnect {
                 System.out.println("This person has never acted in any movies");
             }
             else {
-                while(res.next()) {
+                do {
                     System.out.println(String.format("Movie : %s\n", res.getString("Title")));
-                }
+                } while(res.next());
             }
         }
         catch (SQLException e) {

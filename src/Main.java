@@ -150,7 +150,7 @@ public class Main {
         if (date.charAt(4) != '-' || date.charAt(7) != '-') {
             return false;
         } else if (!checkInBetween(Integer.parseInt(date.substring(0,4)), 1895, 2021)
-                || !checkInBetween(Integer.parseInt(date.substring(5,6)), 1, 13)
+                || !checkInBetween(Integer.parseInt(date.substring(5,7)), 1, 13)
                 || !checkInBetween(Integer.parseInt(date.substring(8)), 1, 32)) {
             return false;
         }
